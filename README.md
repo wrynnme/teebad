@@ -37,17 +37,17 @@
 
 ### ระบบงานเดิมที่ต้องการแทนที่
 
-| เดิม                              | ใหม่ (teebad)                      |
-| --------------------------------- | ---------------------------------- |
+| เดิม | ใหม่ (teebad) |
+| --- | --- |
 | พิมพ์ชื่อในกลุ่ม LINE เพื่อลงชื่อ | กดลงชื่อในแอป — realtime ทุกคนเห็น |
-| เขียนกระดานหน้าคอร์ท              | บอร์ดดิจิทัลในมือถือทุกคน          |
-| คำนวณเองแล้วพิมพ์สั่งขุนทอง       | คิดเงินอัตโนมัติ + ส่งบิลส่วนตัว   |
+| เขียนกระดานหน้าคอร์ท | บอร์ดดิจิทัลในมือถือทุกคน |
+| คำนวณเองแล้วพิมพ์สั่งขุนทอง | คิดเงินอัตโนมัติ + ส่งบิลส่วนตัว |
 
 ### Stack
 
 | Layer    | Technology                                                               |
 | -------- | ------------------------------------------------------------------------ |
-| Frontend | Next.js 15 (App Router) + shadcn/ui + Radix UI + Tailwind CSS + LIFF SDK |
+| Frontend | Next.js 16.2.1 (Page Router) + shadcn/ui + Radix UI + Tailwind CSS + LIFF SDK |
 | Backend  | Node.js + Express + TypeScript                                           |
 | Database | Supabase (PostgreSQL + Realtime + Storage)                               |
 | Notify   | LINE Messaging API — Service Messages (ฟรี)                              |
@@ -74,51 +74,51 @@
 ```typescript
 // ── Session ──
 interface Session {
-	id: string;
-	name: string;
-	date: string; // ISO date "2025-03-28"
-	startTime: string; // "18:00"
-	endTime: string; // "20:00"
-	courtCount: number; // 1–N (แล้วแต่วัน)
-	maxPlayers: number;
-	feePerHour: number; // ค่าคอร์ทรวม/ชั่วโมง
-	billingMode: 'equal' | 'by_games';
-	defaultMatchMode: MatchMode;
-	status: 'open' | 'playing' | 'ended';
-	createdBy: string;
+ id: string;
+ name: string;
+ date: string; // ISO date "2025-03-28"
+ startTime: string; // "18:00"
+ endTime: string; // "20:00"
+ courtCount: number; // 1–N (แล้วแต่วัน)
+ maxPlayers: number;
+ feePerHour: number; // ค่าคอร์ทรวม/ชั่วโมง
+ billingMode: 'equal' | 'by_games';
+ defaultMatchMode: MatchMode;
+ status: 'open' | 'playing' | 'ended';
+ createdBy: string;
 }
 
 // ── Registration ──
 interface Registration {
-	id: string;
-	sessionId: string;
-	userId: string;
-	displayName: string;
-	pictureUrl: string;
-	joinedAt: string;
-	paidStatus: 'pending' | 'approved' | 'rejected' | 'onsite';
-	paymentMethod: 'qr' | 'transfer' | 'onsite';
-	slipUrl?: string;
-	gamesPlayed: number;
-	amountDue: number;
+ id: string;
+ sessionId: string;
+ userId: string;
+ displayName: string;
+ pictureUrl: string;
+ joinedAt: string;
+ paidStatus: 'pending' | 'approved' | 'rejected' | 'onsite';
+ paymentMethod: 'qr' | 'transfer' | 'onsite';
+ slipUrl?: string;
+ gamesPlayed: number;
+ amountDue: number;
 }
 
 // ── Match ──
 type MatchMode = 'random' | 'rotation' | 'winner_stays' | 'manual';
 
 interface Match {
-	id: string;
-	sessionId: string;
-	courtNumber: number;
-	roundNumber: number;
-	team1: string[]; // [userId, userId]
-	team2: string[];
-	score1?: number;
-	score2?: number;
-	winnerId?: 'team1' | 'team2';
-	status: 'playing' | 'done';
-	startedAt: string;
-	endedAt?: string;
+ id: string;
+ sessionId: string;
+ courtNumber: number;
+ roundNumber: number;
+ team1: string[]; // [userId, userId]
+ team2: string[];
+ score1?: number;
+ score2?: number;
+ winnerId?: 'team1' | 'team2';
+ status: 'playing' | 'done';
+ startedAt: string;
+ endedAt?: string;
 }
 
 // ── Partner Lock ──
@@ -127,55 +127,55 @@ type LockScope = 'per_session' | 'permanent';
 type LockStatus = 'pending' | 'active' | 'rejected' | 'cancelled';
 
 interface PartnerLock {
-	id: string;
-	sessionId: string | null; // null = permanent
-	requesterId: string;
-	requesterName: string;
-	targetId: string;
-	targetName: string;
-	lockType: LockType;
-	scope: LockScope;
-	status: LockStatus;
-	requestedAt: string;
-	respondedAt?: string;
+ id: string;
+ sessionId: string | null; // null = permanent
+ requesterId: string;
+ requesterName: string;
+ targetId: string;
+ targetName: string;
+ lockType: LockType;
+ scope: LockScope;
+ status: LockStatus;
+ requestedAt: string;
+ respondedAt?: string;
 }
 
 interface LockConflict {
-	lockId: string;
-	reason: string;
-	suggestion: 'skip' | 'wait';
+ lockId: string;
+ reason: string;
+ suggestion: 'skip' | 'wait';
 }
 
 // ── Billing ──
 interface PlayerBill {
-	userId: string;
-	displayName: string;
-	pictureUrl: string;
-	gamesPlayed: number;
-	hoursPlayed: number;
-	amountDue: number;
-	paidStatus: Registration['paidStatus'];
+ userId: string;
+ displayName: string;
+ pictureUrl: string;
+ gamesPlayed: number;
+ hoursPlayed: number;
+ amountDue: number;
+ paidStatus: Registration['paidStatus'];
 }
 
 interface SessionBill {
-	sessionId: string;
-	totalCost: number;
-	courtCount: number;
-	players: PlayerBill[];
-	collected: number;
-	outstanding: number;
+ sessionId: string;
+ totalCost: number;
+ courtCount: number;
+ players: PlayerBill[];
+ collected: number;
+ outstanding: number;
 }
 
 // ── Stats ──
 interface PlayerStats {
-	userId: string;
-	displayName: string;
-	pictureUrl: string;
-	wins: number;
-	losses: number;
-	gamesPlayed: number;
-	winRate: number; // 0.0–1.0
-	streak: number; // + ชนะติด, - แพ้ติด
+ userId: string;
+ displayName: string;
+ pictureUrl: string;
+ wins: number;
+ losses: number;
+ gamesPlayed: number;
+ winRate: number; // 0.0–1.0
+ streak: number; // + ชนะติด, - แพ้ติด
 }
 ```
 
@@ -204,42 +204,50 @@ interface PlayerStats {
 
 teebad/
 ├── frontend/
-│ └── src/
-│ ├── app/ # Next.js App Router — page.tsx ต่อ route
-│ │ ├── (board)/
-│ │ ├── (billing)/
-│ │ ├── (session)/
-│ │ └── (stats)/
-│ ├── components/ # จัดตาม feature: session/, board/, billing/, locks/, stats/
-│ │ └── ui/ # shadcn/ui (auto-generated ห้ามแก้มือ)
-│ ├── hooks/
-│ ├── lib/ # liff, api, supabase, promptpay, matchmaking, khunthong, utils
-│ └── types/index.ts
+│   └── src/
+│       ├── pages/                  # Next.js Page Router — ไฟล์ต่อ route (ใช้ pages/ ไม่ใช่ app/)
+│       │   ├── board/              # บอร์ดเกม
+│       │   ├── billing/            # คิดเงิน
+│       │   ├── session/            # รายการก๊วน + ลงชื่อ
+│       │   ├── stats/              # สถิติ & อันดับ
+│       │   └── api/                # API routes
+│       ├── components/            # UI components จัดตาม feature
+│       │   ├── session/
+│       │   ├── board/
+│       │   ├── billing/
+│       │   ├── locks/
+│       │   ├── stats/
+│       │   └── ui/                 # shadcn/ui (auto-generated ห้ามแก้มือ)
+│       ├── hooks/                  # useLiff, useSessions, useBoard, useMatchmaking
+│       │                           # useBilling, useLocks, useStats
+│       ├── lib/                    # liff, api, supabase, promptpay, matchmaking, khunthong, utils
+│       └── types/index.ts
 └── backend/
-└── src/
-├── routes/
-├── middleware/ # verifyLiff, isAdmin
-├── services/ # matchmaking, billing, lineNotify, cronJobs
-└── db/schema.sql
+    └── src/
+        ├── routes/                 # sessions, registrations, matches, payments, locks, stats, admin
+        ├── middleware/             # verifyLiff, isAdmin
+        ├── services/               # matchmaking, billing, lineNotify, cronJobs
+        └── db/schema.sql
 
 ````
 
 ## Key Commands
 
 ```bash
-# Frontend
+# Frontend (Next.js)
 cd frontend
-npm run dev                          # http://localhost:3000
-npm run build && npm start
-npx shadcn@latest add <component>
+npm run dev                          # dev server — http://localhost:3000
+npm run build && npm start            # production
+npx shadcn@latest add <component>     # เพิ่ม shadcn component
 
 # Backend
-cd backend && npm run dev
+cd backend
+npm run dev                          # dev with nodemon
 npm run build && npm start
 
 # DB
-supabase db push
-supabase gen types typescript        # → src/types/supabase.ts
+supabase db push                     # apply schema changes
+supabase gen types typescript         # regenerate TS types → src/types/supabase.ts
 ````
 
 ## Core Rules
@@ -544,7 +552,7 @@ router.post('/endpoint', verifyLiff, handler)
 
 // verifyLiff:
 // 1. ดึง token จาก Authorization: Bearer {liffIdToken}
-// 2. POST https://api.line.me/oauth2/v2.1/verify
+// 2. POST <https://api.line.me/oauth2/v2.1/verify>
 // 3. attach userId ลง req.user
 
 ## LIFF Client
@@ -558,7 +566,7 @@ import { liff } from '../lib/liff'
 ## Service Messages
 
 - ใช้ได้เฉพาะ Verified Mini App เท่านั้น
-- endpoint: POST https://api.line.me/v2/bot/message/push
+- endpoint: POST <https://api.line.me/v2/bot/message/push>
 - header: Authorization: Bearer {CHANNEL_ACCESS_TOKEN}
 - ส่งได้ฟรี ไม่มีค่าใช้จ่าย
 - template ทั้งหมดอยู่ใน backend/src/services/lineNotify.ts — ห้ามสร้างนอกไฟล์นี้
@@ -963,7 +971,7 @@ TZ=Asia/Bangkok
 สร้าง README.md ที่มี:
 
 1. Setup LINE Developer Console + ขอ LIFF ID
-2. ขอสิทธิ์ LINE Mini App Channel (ส่งอีเมล dl_api_th@linecorp.com)
+2. ขอสิทธิ์ LINE Mini App Channel (ส่งอีเมล <dl_api_th@linecorp.com>)
 3. Setup Supabase: สร้าง project, run schema.sql, enable Realtime
 4. Deploy frontend บน Vercel
 5. Deploy backend บน Railway
