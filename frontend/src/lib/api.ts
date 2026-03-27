@@ -1,4 +1,4 @@
-import { getLiffIdToken } from './liff';
+import { getLiffIdToken, refreshLiffToken } from './liff';
 import type { ApiResponse } from '@/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
@@ -13,7 +13,8 @@ async function getHeaders(): Promise<HeadersInit> {
 
 async function request<T>(
   path: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  retry = true
 ): Promise<ApiResponse<T>> {
   try {
     const headers = await getHeaders();
@@ -23,6 +24,12 @@ async function request<T>(
     });
 
     const data = await res.json() as ApiResponse<T> | T;
+
+    // Token หมดอายุ — refresh แล้ว retry ครั้งเดียว
+    if (res.status === 401 && retry) {
+      const refreshed = await refreshLiffToken();
+      if (refreshed) return request<T>(path, options, false);
+    }
 
     if (!res.ok) {
       const errData = data as ApiResponse<T>;
@@ -45,16 +52,10 @@ export const api = {
   get: <T>(path: string) => request<T>(path, { method: 'GET' }),
 
   post: <T>(path: string, body: unknown) =>
-    request<T>(path, {
-      method: 'POST',
-      body: JSON.stringify(body),
-    }),
+    request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
 
   patch: <T>(path: string, body: unknown) =>
-    request<T>(path, {
-      method: 'PATCH',
-      body: JSON.stringify(body),
-    }),
+    request<T>(path, { method: 'PATCH', body: JSON.stringify(body) }),
 
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
 };

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+import { supabase } from '../lib/supabase';
 
-export function isAdmin(req: Request, res: Response, next: NextFunction): void {
+export async function isAdmin(req: Request, res: Response, next: NextFunction): Promise<void> {
   const userId = req.user?.userId;
 
   if (!userId) {
@@ -8,12 +9,13 @@ export function isAdmin(req: Request, res: Response, next: NextFunction): void {
     return;
   }
 
-  const adminIds = (process.env.ADMIN_LINE_USER_IDS ?? '')
-    .split(',')
-    .map(id => id.trim())
-    .filter(Boolean);
+  const { data, error } = await supabase
+    .from('users')
+    .select('is_admin')
+    .eq('line_user_id', userId)
+    .single();
 
-  if (!adminIds.includes(userId)) {
+  if (error || !data?.is_admin) {
     res.status(403).json({ error: true, message: 'ไม่มีสิทธิ์ admin' });
     return;
   }

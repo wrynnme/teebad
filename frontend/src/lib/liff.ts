@@ -50,3 +50,17 @@ export function liffLogout(): void {
   _liff?.logout();
   _idToken = null;
 }
+
+// รีเฟรช token โดย re-init LIFF — คืน true ถ้าสำเร็จ
+export async function refreshLiffToken(): Promise<boolean> {
+  try {
+    if (!_liff) return false;
+    const liffId = process.env.NEXT_PUBLIC_LIFF_ID;
+    if (!liffId) return false;
+    await _liff.init({ liffId });
+    _idToken = _liff.getIDToken();
+    return !!_idToken;
+  } catch {
+    return false;
+  }
+}
