@@ -251,3 +251,12 @@ create policy "notif_select_own" on public.notifications_log for select using (
 -- ============================================================
 alter publication supabase_realtime add table public.matches;
 alter publication supabase_realtime add table public.registrations;
+
+-- ============================================================
+-- MIGRATIONS (เพิ่ม column ใน table ที่มีอยู่แล้ว)
+-- ============================================================
+
+-- 2026-03-27: เพิ่มระบบ check-in
+alter table public.registrations
+  add column if not exists checked_in     boolean     not null default false,
+  add column if not exists checked_in_at  timestamptz;
