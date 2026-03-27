@@ -15,7 +15,7 @@ const CreateSessionSchema = z.object({
   max_players: z.number().int().min(1),
   fee_per_hour: z.number().min(0),
   billing_mode: z.enum(['equal', 'by_games']),
-  default_match_mode: z.enum(['random', 'rotation', 'winner_stays', 'manual']),
+  default_match_mode: z.enum(['random', 'rotation', 'winner_stays', 'manual']).optional().default('rotation'),
 });
 
 const UpdateSessionSchema = z.object({

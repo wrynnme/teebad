@@ -18,7 +18,6 @@ const schema = z.object({
   max_players: z.number().int().min(4),
   fee_per_hour: z.number().min(0),
   billing_mode: z.enum(['equal', 'by_games']),
-  default_match_mode: z.enum(['random', 'rotation', 'winner_stays', 'manual']),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -117,24 +116,6 @@ export function SessionForm({ open, onOpenChange, onSubmit, isLoading, error }: 
               <SelectContent>
                 <SelectItem value="equal">หารเท่ากัน</SelectItem>
                 <SelectItem value="by_games">ตามจำนวนเกม</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <Label>โหมดจัดคู่เริ่มต้น</Label>
-            <Select
-              defaultValue={watch('default_match_mode')}
-              onValueChange={(v) => setValue('default_match_mode', v as FormValues['default_match_mode'])}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="random">สุ่มคู่</SelectItem>
-                <SelectItem value="rotation">หมุนเวียน</SelectItem>
-                <SelectItem value="winner_stays">ชนะอยู่</SelectItem>
-                <SelectItem value="manual">เลือกเอง</SelectItem>
               </SelectContent>
             </Select>
           </div>

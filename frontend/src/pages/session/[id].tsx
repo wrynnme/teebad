@@ -29,12 +29,6 @@ const statusConfig: Record<SessionStatus, { label: string; className: string }> 
   ended: { label: 'จบแล้ว', className: 'bg-gray-100 text-gray-500' },
 };
 
-const modeLabel: Record<string, string> = {
-  random: 'สุ่มคู่',
-  rotation: 'หมุนเวียน',
-  winner_stays: 'ชนะอยู่',
-  manual: 'เลือกเอง',
-};
 
 export default function SessionDetailPage() {
   const router = useRouter();
@@ -135,7 +129,7 @@ export default function SessionDetailPage() {
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <IconBuildingCommunity size={16} />
-            <span>{session.court_count} คอร์ท · {modeLabel[session.default_match_mode]}</span>
+            <span>{session.court_count} คอร์ท</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <IconUsers size={16} />

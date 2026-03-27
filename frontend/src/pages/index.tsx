@@ -15,12 +15,7 @@ import { IconPlus, IconAlertCircle, IconBrandLine, IconShirtSport, IconShieldChe
 import { toast } from 'sonner';
 import type { CreateSessionForm } from '@/types';
 
-// ใช้ type ตรงกับ SessionForm component
-type SessionFormValues = Omit<CreateSessionForm, 'court_count' | 'max_players' | 'fee_per_hour'> & {
-  court_count: number;
-  max_players: number;
-  fee_per_hour: number;
-};
+type SessionFormValues = CreateSessionForm;
 
 type Filter = 'today' | 'week' | 'all';
 

@@ -95,6 +95,9 @@ supabase gen types typescript        # regenerate TS types → src/types/supabas
 ## Domain Logic (อ่านก่อนแก้โค้ดที่เกี่ยวข้อง)
 
 **Matchmaking** — 4 โหมด: `random` / `rotation` (เล่นน้อยขึ้นก่อน) / `winner_stays` (ชนะ 3 รอบต้องลงคิว) / `manual`
+- โหมดเลือกตอนสร้างรอบบนหน้า Board (`/board/[id]`) — **ไม่ต้องตั้งตอนสร้างก๊วน**
+- `default_match_mode` ใน DB ยังคงอยู่ แต่ backend default เป็น `'rotation'` เสมอ
+- Board page (`pages/board/[id].tsx`) + hook (`hooks/useBoard.ts`) ใช้ Supabase Realtime สำหรับ live updates
 
 **Billing** — 2 แบบ: `equal` (หารเท่า) / `by_games` (ตามจำนวนเกมจริง, round up แล้วปรับคนสุดท้าย)
 

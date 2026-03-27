@@ -210,7 +210,6 @@ export interface CreateSessionForm {
   max_players: number;
   fee_per_hour: number;
   billing_mode: BillingMode;
-  default_match_mode: MatchMode;
 }
 
 export interface RegisterSessionForm {
