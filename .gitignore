@@ -1,6 +1,6 @@
 # Editor & Claude
-.cursor
-.claude
+.cursor/
+.claude/
 *.swp
 *.swo
 *~
