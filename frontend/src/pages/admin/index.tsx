@@ -57,7 +57,7 @@ export default function AdminPage() {
       {/* Tabs */}
       <div className="p-4">
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="w-full flex mb-4 h-auto p-1 px-3 gap-1">
+          <TabsList className="w-full flex mb-4 h-auto px-3 py-10 gap-1">
             <TabsTrigger value="dashboard" className="flex-1 flex-col items-center gap-1 h-auto py-2 px-1">
               <IconLayoutGrid size={16} />
               <span className="text-xs">แดชบอร์ด</span>
