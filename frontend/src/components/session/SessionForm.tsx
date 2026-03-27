@@ -92,17 +92,17 @@ export function SessionForm({ open, onOpenChange, onSubmit, isLoading, error }: 
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
               <Label>จำนวนคอร์ท</Label>
-              <Input type="number" min={1} max={8} {...register('court_count')} />
+              <Input type="number" min={1} max={8} {...register('court_count', { valueAsNumber: true })} />
             </div>
             <div className="flex flex-col gap-1.5">
               <Label>รับสูงสุด (คน)</Label>
-              <Input type="number" min={4} {...register('max_players')} />
+              <Input type="number" min={4} {...register('max_players', { valueAsNumber: true })} />
             </div>
           </div>
 
           <div className="flex flex-col gap-1.5">
             <Label>ค่าคอร์ท (บาท/ชม.)</Label>
-            <Input type="number" min={0} {...register('fee_per_hour')} />
+            <Input type="number" min={0} {...register('fee_per_hour', { valueAsNumber: true })} />
           </div>
 
           <div className="flex flex-col gap-1.5">
