@@ -18,8 +18,23 @@ const PORT = process.env.PORT ?? 4000;
 
 // Middleware
 app.use(helmet());
+// รองรับ FRONTEND_URL เป็น comma-separated หลาย origin ได้
+const allowedOrigins = (process.env.FRONTEND_URL ?? '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL ?? '*',
+  origin: allowedOrigins.length > 0
+    ? (origin, callback) => {
+        // อนุญาต request ที่ไม่มี origin (เช่น curl, mobile) หรือ origin ที่อยู่ใน whitelist
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error(`CORS: origin ${origin} not allowed`));
+        }
+      }
+    : '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
