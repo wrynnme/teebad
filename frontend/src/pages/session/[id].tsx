@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLiff } from '@/hooks/useLiff';
-import { useRegistration, useSession, useUpdateSession, useCheckIn } from '@/hooks/useSessions';
+import { useRegistration, useSession, useUpdateSession, useCheckIn, useOptOut } from '@/hooks/useSessions';
 import { cn } from '@/lib/utils';
 import type { PaymentMethod, SessionStatus } from '@/types';
 import {
@@ -41,6 +41,7 @@ export default function SessionDetailPage() {
   const { register, cancelRegistration, isLoading: actionLoading } = useRegistration();
   const { updateStatus, isLoading: statusLoading } = useUpdateSession();
   const { checkIn, isLoading: checkInLoading } = useCheckIn();
+  const { toggleOptOut, isLoading: optOutLoading } = useOptOut();
   const [showRegisterSheet, setShowRegisterSheet] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('promptpay');
 
@@ -73,7 +74,7 @@ export default function SessionDetailPage() {
   const isRegistered = Boolean(myReg);
   const isFull = registrations.length >= session.max_players;
   const canRegister = !isRegistered && !isFull && session.status !== 'ended';
-  const checkedInCount = registrations.filter(r => r.checked_in).length;
+  const checkedInCount = registrations.filter(r => r.checked_in && !r.opted_out).length;
   const canStart = checkedInCount >= 4;
   const statusCfg = statusConfig[session.status];
 
@@ -105,6 +106,17 @@ export default function SessionDetailPage() {
       refetch();
     } else {
       toast.error('ยกเลิกไม่สำเร็จ');
+    }
+  };
+
+  const handleOptOut = async () => {
+    if (!myReg) return;
+    const ok = await toggleOptOut(myReg.id);
+    if (ok) {
+      toast.success(myReg.opted_out ? 'กลับมาเล่นแล้ว' : 'เลิกเล่นแล้ว ระบบจะไม่จับคู่ให้อีก');
+      refetch();
+    } else {
+      toast.error('เกิดข้อผิดพลาด');
     }
   };
 
@@ -264,16 +276,30 @@ export default function SessionDetailPage() {
                   </Button>
                 )
               )}
-              {/* ยกเลิก */}
-              <Button
-                variant={session.status === 'ended' ? 'outline' : 'ghost'}
-                size="sm"
-                className="w-full text-destructive hover:text-destructive"
-                onClick={handleCancel}
-                disabled={actionLoading || session.status === 'ended'}
-              >
-                {actionLoading ? 'กำลังยกเลิก...' : 'ยกเลิกการลงชื่อ'}
-              </Button>
+              {/* เลิกเล่น / กลับมาเล่น (เมื่อ checked_in แล้ว) หรือ ยกเลิกการลงชื่อ */}
+              {myReg?.checked_in ? (
+                session.status !== 'ended' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={handleOptOut}
+                    disabled={optOutLoading}
+                  >
+                    {optOutLoading ? 'กำลังบันทึก...' : myReg.opted_out ? 'กลับมาเล่น' : 'เลิกเล่น'}
+                  </Button>
+                )
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full text-destructive hover:text-destructive"
+                  onClick={handleCancel}
+                  disabled={actionLoading || session.status === 'ended'}
+                >
+                  {actionLoading ? 'กำลังยกเลิก...' : 'ยกเลิกการลงชื่อ'}
+                </Button>
+              )}
             </>
           ) : (
             <Button

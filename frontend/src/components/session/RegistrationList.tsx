@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { IconCircleCheckFilled } from '@tabler/icons-react';
+import { cn } from '@/lib/utils';
 import type { Registration, PaidStatus } from '@/types';
 
 interface RegistrationListProps {
@@ -50,7 +51,7 @@ export function RegistrationList({ registrations, isLoading, currentUserId }: Re
         const statusCfg = paidStatusConfig[reg.paid_status];
 
         return (
-          <div key={reg.id} className="flex items-center gap-3 py-2.5">
+          <div key={reg.id} className={cn('flex items-center gap-3 py-2.5', reg.opted_out && 'opacity-40')}>
             {/* ลำดับ */}
             <span className="text-xs text-muted-foreground w-5 text-center">{idx + 1}</span>
 
@@ -73,10 +74,12 @@ export function RegistrationList({ registrations, isLoading, currentUserId }: Re
               </span>
             </div>
 
-            {/* เช็คอิน */}
-            {reg.checked_in && (
+            {/* เช็คอิน / เลิกเล่น */}
+            {reg.opted_out ? (
+              <Badge variant="outline" className="text-xs shrink-0 text-muted-foreground">เลิกเล่น</Badge>
+            ) : reg.checked_in ? (
               <IconCircleCheckFilled size={16} className="text-green-500 shrink-0" />
-            )}
+            ) : null}
 
             {/* สถานะการชำระ */}
             <Badge variant={statusCfg.variant} className="text-xs shrink-0">

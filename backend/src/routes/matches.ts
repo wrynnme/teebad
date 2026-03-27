@@ -65,10 +65,13 @@ router.post('/generate', verifyLiff, isAdmin, async (req, res) => {
     // ดึงผู้เล่นที่ลงทะเบียน + games_played
     const { data: registrations } = await supabase
       .from('registrations')
-      .select('user_id, games_played')
+      .select('user_id, games_played, opted_out')
       .eq('session_id', session_id);
 
-    const allPlayers = (registrations ?? []).map(r => r.user_id);
+    // กรองเฉพาะผู้เล่นที่ไม่ได้ opt-out
+    const allPlayers = (registrations ?? [])
+      .filter(r => !r.opted_out)
+      .map(r => r.user_id);
     const gamesPlayed: Record<string, number> = {};
     for (const r of registrations ?? []) {
       gamesPlayed[r.user_id] = r.games_played;

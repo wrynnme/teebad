@@ -17,6 +17,21 @@ export function useCheckIn() {
   return { checkIn, isLoading };
 }
 
+// ── เลิกเล่น / กลับมาเล่น (toggle) ────────────────────────
+
+export function useOptOut() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const toggleOptOut = async (registrationId: string): Promise<boolean> => {
+    setIsLoading(true);
+    const res = await api.patch(`/api/registrations/${registrationId}/optout`, {});
+    setIsLoading(false);
+    return !res.error;
+  };
+
+  return { toggleOptOut, isLoading };
+}
+
 type SessionFilter = 'today' | 'week' | 'all';
 
 // ── รายการก๊วน ────────────────────────────────────────────

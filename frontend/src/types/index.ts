@@ -60,6 +60,7 @@ export interface Registration {
   games_played: number;
   checked_in: boolean;
   checked_in_at: string | null;
+  opted_out: boolean;
   joined_at: string;
   // joined fields
   user?: Pick<User, 'line_user_id' | 'display_name' | 'picture_url'>;

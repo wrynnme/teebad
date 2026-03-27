@@ -164,8 +164,10 @@ export default function BoardPage() {
     activeMatches.flatMap(m => [...m.team1_players, ...m.team2_players])
   );
   const queue = registrations
-    .filter(r => !busyPlayerIds.has(r.user_id))
+    .filter(r => !busyPlayerIds.has(r.user_id) && !r.opted_out)
     .sort((a, b) => a.games_played - b.games_played);
+
+  const optedOut = registrations.filter(r => r.opted_out);
 
   if (isLoading || sessionLoading) {
     return (
@@ -274,6 +276,24 @@ export default function BoardPage() {
             </div>
           )}
         </section>
+
+        {/* เลิกเล่นแล้ว */}
+        {optedOut.length > 0 && (
+          <section>
+            <h2 className="text-sm font-semibold text-muted-foreground mb-2">เลิกเล่นแล้ว ({optedOut.length} คน)</h2>
+            <div className="flex flex-wrap gap-2">
+              {optedOut.map(r => (
+                <div key={r.user_id} className="flex items-center gap-1.5 bg-muted/50 rounded-lg px-2.5 py-1.5 opacity-50">
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage src={userMap[r.user_id]?.picture_url ?? undefined} />
+                    <AvatarFallback className="text-[10px]">{userMap[r.user_id]?.display_name?.[0] ?? '?'}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-xs">{userMap[r.user_id]?.display_name ?? r.user_id.slice(-4)}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* แมตช์ที่จบแล้ว */}
         {doneMatches.length > 0 && (

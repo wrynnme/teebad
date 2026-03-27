@@ -58,6 +58,7 @@ create table if not exists public.registrations (
   games_played    integer     not null default 0,
   checked_in      boolean     not null default false,
   checked_in_at   timestamptz,
+  opted_out       boolean     not null default false,
   joined_at       timestamptz not null default now(),
   unique (session_id, user_id)
 );
@@ -256,7 +257,8 @@ alter publication supabase_realtime add table public.registrations;
 -- MIGRATIONS (เพิ่ม column ใน table ที่มีอยู่แล้ว)
 -- ============================================================
 
--- 2026-03-27: เพิ่มระบบ check-in
+-- 2026-03-27: เพิ่มระบบ check-in และ opt-out
 alter table public.registrations
   add column if not exists checked_in     boolean     not null default false,
-  add column if not exists checked_in_at  timestamptz;
+  add column if not exists checked_in_at  timestamptz,
+  add column if not exists opted_out      boolean     not null default false;

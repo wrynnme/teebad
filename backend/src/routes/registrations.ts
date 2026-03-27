@@ -150,13 +150,51 @@ router.patch('/:id/checkin', verifyLiff, async (req, res) => {
   }
 });
 
-// DELETE /api/registrations/:id — ยกเลิกการลงชื่อ (เฉพาะของตัวเอง)
+// PATCH /api/registrations/:id/optout — เลิกเล่น (เฉพาะของตัวเอง, toggle ได้)
+router.patch('/:id/optout', verifyLiff, async (req, res) => {
+  try {
+    const { data: reg, error: fetchErr } = await supabase
+      .from('registrations')
+      .select('user_id, opted_out')
+      .eq('id', req.params.id)
+      .single();
+
+    if (fetchErr || !reg) {
+      res.status(404).json({ error: true, message: 'ไม่พบการลงชื่อนี้' });
+      return;
+    }
+
+    if (reg.user_id !== req.user!.userId) {
+      res.status(403).json({ error: true, message: 'ไม่มีสิทธิ์' });
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('registrations')
+      .update({ opted_out: !reg.opted_out })
+      .eq('id', req.params.id)
+      .select()
+      .single();
+
+    if (error) {
+      res.status(500).json({ error: true, message: 'เกิดข้อผิดพลาด' });
+      return;
+    }
+
+    res.json({ data });
+  } catch (err) {
+    console.error('registrations optout exception:', err);
+    res.status(500).json({ error: true, message: 'เกิดข้อผิดพลาด' });
+  }
+});
+
+// DELETE /api/registrations/:id — ยกเลิกการลงชื่อ (เฉพาะของตัวเอง, ห้ามถ้า checked_in แล้ว)
 router.delete('/:id', verifyLiff, async (req, res) => {
   try {
     // ตรวจสอบว่าเป็นของตัวเองก่อนลบ
     const { data: reg, error: fetchErr } = await supabase
       .from('registrations')
-      .select('user_id, session_id')
+      .select('user_id, session_id, checked_in')
       .eq('id', req.params.id)
       .single();
 
@@ -167,6 +205,11 @@ router.delete('/:id', verifyLiff, async (req, res) => {
 
     if (reg.user_id !== req.user!.userId) {
       res.status(403).json({ error: true, message: 'ไม่มีสิทธิ์ยกเลิกการลงชื่อนี้' });
+      return;
+    }
+
+    if (reg.checked_in) {
+      res.status(400).json({ error: true, message: 'เช็คอินแล้ว ไม่สามารถยกเลิกการลงชื่อได้' });
       return;
     }
 
