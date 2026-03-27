@@ -1,24 +1,28 @@
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { useState } from 'react';
-import { useLiff } from '@/hooks/useLiff';
-import { useSession, useRegistration } from '@/hooks/useSessions';
 import { RegistrationList } from '@/components/session/RegistrationList';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import {
-  IconArrowLeft, IconClock, IconBuildingCommunity, IconCurrencyBaht,
-  IconUsers, IconAlertCircle, IconLayoutGrid,
-} from '@tabler/icons-react';
-import { toast } from 'sonner';
+import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useLiff } from '@/hooks/useLiff';
+import { useRegistration, useSession } from '@/hooks/useSessions';
 import { cn } from '@/lib/utils';
 import type { PaymentMethod, SessionStatus } from '@/types';
+import {
+  IconAlertCircle,
+  IconArrowLeft,
+  IconBuildingCommunity,
+  IconClock,
+  IconCurrencyBaht,
+  IconLayoutGrid,
+  IconUsers,
+} from '@tabler/icons-react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 const statusConfig: Record<SessionStatus, { label: string; className: string }> = {
   open: { label: 'รับสมัคร', className: 'bg-green-100 text-green-700' },
@@ -204,7 +208,7 @@ export default function SessionDetailPage() {
             <SheetTitle>ลงชื่อเข้าร่วม</SheetTitle>
           </SheetHeader>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 p-4">
             <div className="flex flex-col gap-1.5">
               <Label>วิธีชำระเงิน</Label>
               <Select
