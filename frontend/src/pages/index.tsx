@@ -89,6 +89,17 @@ export default function Home() {
     );
   }
 
+  if (liffError) {
+    return (
+      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
+        <Alert variant="destructive" className="max-w-sm">
+          <IconAlertCircle className="h-4 w-4" />
+          <AlertDescription>{liffError}</AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
   // เปิดนอก LINE
   if (!isInClient) {
     return (
@@ -98,17 +109,6 @@ export default function Home() {
           <h1 className="text-xl font-bold mb-2">กรุณาเปิดใน LINE</h1>
           <p className="text-muted-foreground text-sm">TeeBad ต้องเปิดผ่าน LINE Mini App เท่านั้น</p>
         </div>
-      </div>
-    );
-  }
-
-  if (liffError) {
-    return (
-      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
-        <Alert variant="destructive" className="max-w-sm">
-          <IconAlertCircle className="h-4 w-4" />
-          <AlertDescription>{liffError}</AlertDescription>
-        </Alert>
       </div>
     );
   }
