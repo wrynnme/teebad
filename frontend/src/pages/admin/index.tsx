@@ -12,7 +12,7 @@ import { AdminUsers } from '@/components/admin/AdminUsers';
 
 export default function AdminPage() {
   const router = useRouter();
-  const { profile, user, isLoading: liffLoading, isInClient, error: liffError } = useLiff();
+  const { profile, user, isLoading: liffLoading, error: liffError } = useLiff();
 
   if (liffLoading) {
     return (
@@ -20,17 +20,6 @@ export default function AdminPage() {
         <Skeleton className="h-6 w-32" />
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-64 w-full rounded-xl" />
-      </div>
-    );
-  }
-
-  if (!isInClient) {
-    return (
-      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
-        <Alert variant="destructive" className="max-w-sm">
-          <IconAlertCircle className="h-4 w-4" />
-          <AlertDescription>กรุณาเปิดผ่าน LINE Mini App</AlertDescription>
-        </Alert>
       </div>
     );
   }

@@ -65,7 +65,7 @@ function SessionList({ filter }: { filter: Filter }) {
 }
 
 export default function Home() {
-  const { profile, user, isLoading: liffLoading, isInClient, error: liffError } = useLiff();
+  const { profile, user, isLoading: liffLoading, error: liffError } = useLiff();
   const { createSession, isLoading: creating, error: createError } = useCreateSession();
   const [showForm, setShowForm] = useState(false);
   const router = useRouter();
@@ -96,19 +96,6 @@ export default function Home() {
           <IconAlertCircle className="h-4 w-4" />
           <AlertDescription>{liffError}</AlertDescription>
         </Alert>
-      </div>
-    );
-  }
-
-  // เปิดนอก LINE
-  if (!isInClient) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 p-6 text-center">
-        <IconBrandLine size={64} className="text-green-500" />
-        <div>
-          <h1 className="text-xl font-bold mb-2">กรุณาเปิดใน LINE</h1>
-          <p className="text-muted-foreground text-sm">TeeBad ต้องเปิดผ่าน LINE Mini App เท่านั้น</p>
-        </div>
       </div>
     );
   }
