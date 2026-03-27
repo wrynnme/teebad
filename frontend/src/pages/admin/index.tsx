@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useLiff } from '@/hooks/useLiff';
-import { IconAlertCircle, IconCalendarEvent, IconLayoutGrid, IconReceipt, IconShieldCheck, IconUsers } from '@tabler/icons-react';
+import { IconAlertCircle, IconCalendarEvent, IconLayoutGrid, IconReceipt, IconUsers } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 
 export default function AdminPage() {
@@ -34,7 +34,7 @@ export default function AdminPage() {
     );
   }
 
-  if (!user?.is_admin) {
+  /* if (!user?.is_admin) {
     return (
       <div className="min-h-screen bg-background p-4 flex flex-col items-center justify-center gap-4 text-center">
         <IconShieldCheck size={48} className="text-muted-foreground opacity-40" />
@@ -44,7 +44,7 @@ export default function AdminPage() {
         </div>
       </div>
     );
-  }
+  } */
 
   return (
     <div className="min-h-screen bg-background">
@@ -57,7 +57,7 @@ export default function AdminPage() {
       {/* Tabs */}
       <div className="p-4">
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="w-full flex mb-4 h-auto px-3 py-10 gap-1">
+          <TabsList className="w-full flex mb-4 h-auto px-3 py-8 gap-1">
             <TabsTrigger value="dashboard" className="flex-1 flex-col items-center gap-1 h-auto py-2 px-1">
               <IconLayoutGrid size={16} />
               <span className="text-xs">แดชบอร์ด</span>
