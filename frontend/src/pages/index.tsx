@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useLiff } from '@/hooks/useLiff';
 import { useSessions, useCreateSession } from '@/hooks/useSessions';
@@ -10,7 +11,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { IconPlus, IconAlertCircle, IconBrandLine, IconShirtSport } from '@tabler/icons-react';
+import { IconPlus, IconAlertCircle, IconBrandLine, IconShirtSport, IconShieldCheck } from '@tabler/icons-react';
 import { toast } from 'sonner';
 import type { CreateSessionForm } from '@/types';
 
@@ -138,7 +139,11 @@ export default function Home() {
             <div className="flex flex-col items-end">
               <span className="text-sm font-medium leading-none">{profile.displayName}</span>
               {user?.is_admin && (
-                <Badge variant="secondary" className="text-xs mt-0.5">Admin</Badge>
+                <Link href="/admin">
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <IconShieldCheck size={18} className="text-primary" />
+                  </Button>
+                </Link>
               )}
             </div>
           </div>
