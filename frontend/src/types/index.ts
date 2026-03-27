@@ -58,6 +58,8 @@ export interface Registration {
   slip_url: string | null;
   amount_due: number | null;
   games_played: number;
+  checked_in: boolean;
+  checked_in_at: string | null;
   joined_at: string;
   // joined fields
   user?: Pick<User, 'line_user_id' | 'display_name' | 'picture_url'>;

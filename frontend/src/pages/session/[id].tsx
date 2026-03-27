@@ -7,13 +7,14 @@ import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLiff } from '@/hooks/useLiff';
-import { useRegistration, useSession, useUpdateSession } from '@/hooks/useSessions';
+import { useRegistration, useSession, useUpdateSession, useCheckIn } from '@/hooks/useSessions';
 import { cn } from '@/lib/utils';
 import type { PaymentMethod, SessionStatus } from '@/types';
 import {
   IconAlertCircle,
   IconArrowLeft,
   IconBuildingCommunity,
+  IconCircleCheckFilled,
   IconClock,
   IconLayoutGrid,
   IconPlayerPlay,
@@ -39,6 +40,7 @@ export default function SessionDetailPage() {
   const { session, isLoading, error, refetch } = useSession(id);
   const { register, cancelRegistration, isLoading: actionLoading } = useRegistration();
   const { updateStatus, isLoading: statusLoading } = useUpdateSession();
+  const { checkIn, isLoading: checkInLoading } = useCheckIn();
   const [showRegisterSheet, setShowRegisterSheet] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('promptpay');
 
@@ -71,6 +73,8 @@ export default function SessionDetailPage() {
   const isRegistered = Boolean(myReg);
   const isFull = registrations.length >= session.max_players;
   const canRegister = !isRegistered && !isFull && session.status !== 'ended';
+  const checkedInCount = registrations.filter(r => r.checked_in).length;
+  const canStart = checkedInCount >= 4;
   const statusCfg = statusConfig[session.status];
 
   const durationHours = (() => {
@@ -101,6 +105,17 @@ export default function SessionDetailPage() {
       refetch();
     } else {
       toast.error('ยกเลิกไม่สำเร็จ');
+    }
+  };
+
+  const handleCheckIn = async () => {
+    if (!myReg) return;
+    const ok = await checkIn(myReg.id);
+    if (ok) {
+      toast.success('เช็คอินสำเร็จ!');
+      refetch();
+    } else {
+      toast.error('เช็คอินไม่สำเร็จ');
     }
   };
 
@@ -189,10 +204,11 @@ export default function SessionDetailPage() {
               <Button
                 className="flex-1"
                 onClick={() => handleStatusChange('playing')}
-                disabled={statusLoading}
+                disabled={statusLoading || !canStart}
+                title={!canStart ? `ต้องเช็คอินอย่างน้อย 4 คน (ตอนนี้ ${checkedInCount} คน)` : undefined}
               >
                 <IconPlayerPlay size={16} className="mr-1.5" />
-                {statusLoading ? 'กำลังเริ่ม...' : 'เริ่มก๊วน'}
+                {statusLoading ? 'กำลังเริ่ม...' : `เริ่มก๊วน (เช็คอิน ${checkedInCount} คน)`}
               </Button>
             )}
             {session.status === 'playing' && (
@@ -226,17 +242,39 @@ export default function SessionDetailPage() {
             )}
           </div>
         )}
-        {/* User: register/cancel */}
-        <div className="p-4">
+        {/* User: register/checkin/cancel */}
+        <div className="p-4 flex flex-col gap-2">
           {isRegistered ? (
-            <Button
-              variant="destructive"
-              className="w-full"
-              onClick={handleCancel}
-              disabled={actionLoading || session.status === 'ended'}
-            >
-              {actionLoading ? 'กำลังยกเลิก...' : 'ยกเลิกการลงชื่อ'}
-            </Button>
+            <>
+              {/* เช็คอิน */}
+              {session.status !== 'ended' && (
+                myReg?.checked_in ? (
+                  <div className="flex items-center justify-center gap-2 py-2 text-green-600 text-sm font-medium">
+                    <IconCircleCheckFilled size={18} />
+                    เช็คอินแล้ว
+                  </div>
+                ) : (
+                  <Button
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    onClick={handleCheckIn}
+                    disabled={checkInLoading}
+                  >
+                    <IconCircleCheckFilled size={16} className="mr-1.5" />
+                    {checkInLoading ? 'กำลังเช็คอิน...' : 'เช็คอิน — มาถึงแล้ว'}
+                  </Button>
+                )
+              )}
+              {/* ยกเลิก */}
+              <Button
+                variant={session.status === 'ended' ? 'outline' : 'ghost'}
+                size="sm"
+                className="w-full text-destructive hover:text-destructive"
+                onClick={handleCancel}
+                disabled={actionLoading || session.status === 'ended'}
+              >
+                {actionLoading ? 'กำลังยกเลิก...' : 'ยกเลิกการลงชื่อ'}
+              </Button>
+            </>
           ) : (
             <Button
               className="w-full"

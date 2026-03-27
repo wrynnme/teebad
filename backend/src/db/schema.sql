@@ -56,6 +56,8 @@ create table if not exists public.registrations (
   slip_url        text,
   amount_due      numeric,
   games_played    integer     not null default 0,
+  checked_in      boolean     not null default false,
+  checked_in_at   timestamptz,
   joined_at       timestamptz not null default now(),
   unique (session_id, user_id)
 );

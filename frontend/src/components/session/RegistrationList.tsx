@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { IconCircleCheckFilled } from '@tabler/icons-react';
 import type { Registration, PaidStatus } from '@/types';
 
 interface RegistrationListProps {
@@ -71,6 +72,11 @@ export function RegistrationList({ registrations, isLoading, currentUserId }: Re
                 {reg.games_played} เกม
               </span>
             </div>
+
+            {/* เช็คอิน */}
+            {reg.checked_in && (
+              <IconCircleCheckFilled size={16} className="text-green-500 shrink-0" />
+            )}
 
             {/* สถานะการชำระ */}
             <Badge variant={statusCfg.variant} className="text-xs shrink-0">

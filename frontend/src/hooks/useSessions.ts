@@ -2,6 +2,21 @@ import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api';
 import type { Session, Registration, CreateSessionForm, RegisterSessionForm } from '@/types';
 
+// ── เช็คอิน ────────────────────────────────────────────────
+
+export function useCheckIn() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const checkIn = async (registrationId: string): Promise<boolean> => {
+    setIsLoading(true);
+    const res = await api.patch(`/api/registrations/${registrationId}/checkin`, {});
+    setIsLoading(false);
+    return !res.error;
+  };
+
+  return { checkIn, isLoading };
+}
+
 type SessionFilter = 'today' | 'week' | 'all';
 
 // ── รายการก๊วน ────────────────────────────────────────────

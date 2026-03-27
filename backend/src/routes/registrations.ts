@@ -107,6 +107,49 @@ router.post('/', verifyLiff, async (req, res) => {
   }
 });
 
+// PATCH /api/registrations/:id/checkin — เช็คอิน (เฉพาะของตัวเอง)
+router.patch('/:id/checkin', verifyLiff, async (req, res) => {
+  try {
+    const { data: reg, error: fetchErr } = await supabase
+      .from('registrations')
+      .select('user_id, checked_in')
+      .eq('id', req.params.id)
+      .single();
+
+    if (fetchErr || !reg) {
+      res.status(404).json({ error: true, message: 'ไม่พบการลงชื่อนี้' });
+      return;
+    }
+
+    if (reg.user_id !== req.user!.userId) {
+      res.status(403).json({ error: true, message: 'ไม่มีสิทธิ์' });
+      return;
+    }
+
+    if (reg.checked_in) {
+      res.status(400).json({ error: true, message: 'เช็คอินไปแล้ว' });
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('registrations')
+      .update({ checked_in: true, checked_in_at: new Date().toISOString() })
+      .eq('id', req.params.id)
+      .select()
+      .single();
+
+    if (error) {
+      res.status(500).json({ error: true, message: 'เช็คอินไม่สำเร็จ' });
+      return;
+    }
+
+    res.json({ data });
+  } catch (err) {
+    console.error('registrations checkin exception:', err);
+    res.status(500).json({ error: true, message: 'เกิดข้อผิดพลาด' });
+  }
+});
+
 // DELETE /api/registrations/:id — ยกเลิกการลงชื่อ (เฉพาะของตัวเอง)
 router.delete('/:id', verifyLiff, async (req, res) => {
   try {
