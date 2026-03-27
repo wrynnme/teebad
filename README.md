@@ -961,7 +961,7 @@ backend/.env.example:
 PORT=3000
 NODE_ENV=development
 SUPABASE_URL=
-SUPABASE_SERVICE_KEY= # service_role key
+SUPABASE_SECRET_KEY= # service_role key
 LINE_CHANNEL_SECRET=
 LINE_CHANNEL_ACCESS_TOKEN=
 ADMIN_LINE_USER_IDS= # userId ของ admin คั่นด้วย comma

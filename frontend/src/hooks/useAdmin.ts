@@ -29,7 +29,7 @@ interface AdminDashboardStats {
   recent_payments: PendingPayment[];
 }
 
-interface AdminSessionWithDetails extends Session {
+interface AdminSessionWithDetails extends Omit<Session, 'registrations'> {
   registrations: { user_id: string; paid_status: string }[];
 }
 
