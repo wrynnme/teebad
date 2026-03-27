@@ -37,21 +37,21 @@
 
 ### ระบบงานเดิมที่ต้องการแทนที่
 
-| เดิม | ใหม่ (teebad) |
-| --- | --- |
+| เดิม                              | ใหม่ (teebad)                      |
+| --------------------------------- | ---------------------------------- |
 | พิมพ์ชื่อในกลุ่ม LINE เพื่อลงชื่อ | กดลงชื่อในแอป — realtime ทุกคนเห็น |
-| เขียนกระดานหน้าคอร์ท | บอร์ดดิจิทัลในมือถือทุกคน |
-| คำนวณเองแล้วพิมพ์สั่งขุนทอง | คิดเงินอัตโนมัติ + ส่งบิลส่วนตัว |
+| เขียนกระดานหน้าคอร์ท              | บอร์ดดิจิทัลในมือถือทุกคน          |
+| คำนวณเองแล้วพิมพ์สั่งขุนทอง       | คิดเงินอัตโนมัติ + ส่งบิลส่วนตัว   |
 
 ### Stack
 
-| Layer    | Technology                                                               |
-| -------- | ------------------------------------------------------------------------ |
+| Layer    | Technology                                                                    |
+| -------- | ----------------------------------------------------------------------------- |
 | Frontend | Next.js 16.2.1 (Page Router) + shadcn/ui + Radix UI + Tailwind CSS + LIFF SDK |
-| Backend  | Node.js + Express + TypeScript                                           |
-| Database | Supabase (PostgreSQL + Realtime + Storage)                               |
-| Notify   | LINE Messaging API — Service Messages (ฟรี)                              |
-| Payment  | promptpay-qr + โอนธนาคาร + จ่ายหน้างาน                                   |
+| Backend  | Node.js + Express + TypeScript                                                |
+| Database | Supabase (PostgreSQL + Realtime + Storage)                                    |
+| Notify   | LINE Messaging API — Service Messages (ฟรี)                                   |
+| Payment  | promptpay-qr + โอนธนาคาร + จ่ายหน้างาน                                        |
 
 ### Feature หลัก
 
@@ -74,51 +74,51 @@
 ```typescript
 // ── Session ──
 interface Session {
- id: string;
- name: string;
- date: string; // ISO date "2025-03-28"
- startTime: string; // "18:00"
- endTime: string; // "20:00"
- courtCount: number; // 1–N (แล้วแต่วัน)
- maxPlayers: number;
- feePerHour: number; // ค่าคอร์ทรวม/ชั่วโมง
- billingMode: 'equal' | 'by_games';
- defaultMatchMode: MatchMode;
- status: 'open' | 'playing' | 'ended';
- createdBy: string;
+	id: string;
+	name: string;
+	date: string; // ISO date "2025-03-28"
+	startTime: string; // "18:00"
+	endTime: string; // "20:00"
+	courtCount: number; // 1–N (แล้วแต่วัน)
+	maxPlayers: number;
+	feePerHour: number; // ค่าคอร์ทรวม/ชั่วโมง
+	billingMode: 'equal' | 'by_games';
+	defaultMatchMode: MatchMode;
+	status: 'open' | 'playing' | 'ended';
+	createdBy: string;
 }
 
 // ── Registration ──
 interface Registration {
- id: string;
- sessionId: string;
- userId: string;
- displayName: string;
- pictureUrl: string;
- joinedAt: string;
- paidStatus: 'pending' | 'approved' | 'rejected' | 'onsite';
- paymentMethod: 'qr' | 'transfer' | 'onsite';
- slipUrl?: string;
- gamesPlayed: number;
- amountDue: number;
+	id: string;
+	sessionId: string;
+	userId: string;
+	displayName: string;
+	pictureUrl: string;
+	joinedAt: string;
+	paidStatus: 'pending' | 'approved' | 'rejected' | 'onsite';
+	paymentMethod: 'qr' | 'transfer' | 'onsite';
+	slipUrl?: string;
+	gamesPlayed: number;
+	amountDue: number;
 }
 
 // ── Match ──
 type MatchMode = 'random' | 'rotation' | 'winner_stays' | 'manual';
 
 interface Match {
- id: string;
- sessionId: string;
- courtNumber: number;
- roundNumber: number;
- team1: string[]; // [userId, userId]
- team2: string[];
- score1?: number;
- score2?: number;
- winnerId?: 'team1' | 'team2';
- status: 'playing' | 'done';
- startedAt: string;
- endedAt?: string;
+	id: string;
+	sessionId: string;
+	courtNumber: number;
+	roundNumber: number;
+	team1: string[]; // [userId, userId]
+	team2: string[];
+	score1?: number;
+	score2?: number;
+	winnerId?: 'team1' | 'team2';
+	status: 'playing' | 'done';
+	startedAt: string;
+	endedAt?: string;
 }
 
 // ── Partner Lock ──
@@ -127,55 +127,55 @@ type LockScope = 'per_session' | 'permanent';
 type LockStatus = 'pending' | 'active' | 'rejected' | 'cancelled';
 
 interface PartnerLock {
- id: string;
- sessionId: string | null; // null = permanent
- requesterId: string;
- requesterName: string;
- targetId: string;
- targetName: string;
- lockType: LockType;
- scope: LockScope;
- status: LockStatus;
- requestedAt: string;
- respondedAt?: string;
+	id: string;
+	sessionId: string | null; // null = permanent
+	requesterId: string;
+	requesterName: string;
+	targetId: string;
+	targetName: string;
+	lockType: LockType;
+	scope: LockScope;
+	status: LockStatus;
+	requestedAt: string;
+	respondedAt?: string;
 }
 
 interface LockConflict {
- lockId: string;
- reason: string;
- suggestion: 'skip' | 'wait';
+	lockId: string;
+	reason: string;
+	suggestion: 'skip' | 'wait';
 }
 
 // ── Billing ──
 interface PlayerBill {
- userId: string;
- displayName: string;
- pictureUrl: string;
- gamesPlayed: number;
- hoursPlayed: number;
- amountDue: number;
- paidStatus: Registration['paidStatus'];
+	userId: string;
+	displayName: string;
+	pictureUrl: string;
+	gamesPlayed: number;
+	hoursPlayed: number;
+	amountDue: number;
+	paidStatus: Registration['paidStatus'];
 }
 
 interface SessionBill {
- sessionId: string;
- totalCost: number;
- courtCount: number;
- players: PlayerBill[];
- collected: number;
- outstanding: number;
+	sessionId: string;
+	totalCost: number;
+	courtCount: number;
+	players: PlayerBill[];
+	collected: number;
+	outstanding: number;
 }
 
 // ── Stats ──
 interface PlayerStats {
- userId: string;
- displayName: string;
- pictureUrl: string;
- wins: number;
- losses: number;
- gamesPlayed: number;
- winRate: number; // 0.0–1.0
- streak: number; // + ชนะติด, - แพ้ติด
+	userId: string;
+	displayName: string;
+	pictureUrl: string;
+	wins: number;
+	losses: number;
+	gamesPlayed: number;
+	winRate: number; // 0.0–1.0
+	streak: number; // + ชนะติด, - แพ้ติด
 }
 ```
 
@@ -204,30 +204,30 @@ interface PlayerStats {
 
 teebad/
 ├── frontend/
-│   └── src/
-│       ├── pages/                  # Next.js Page Router — ไฟล์ต่อ route (ใช้ pages/ ไม่ใช่ app/)
-│       │   ├── board/              # บอร์ดเกม
-│       │   ├── billing/            # คิดเงิน
-│       │   ├── session/            # รายการก๊วน + ลงชื่อ
-│       │   ├── stats/              # สถิติ & อันดับ
-│       │   └── api/                # API routes
-│       ├── components/            # UI components จัดตาม feature
-│       │   ├── session/
-│       │   ├── board/
-│       │   ├── billing/
-│       │   ├── locks/
-│       │   ├── stats/
-│       │   └── ui/                 # shadcn/ui (auto-generated ห้ามแก้มือ)
-│       ├── hooks/                  # useLiff, useSessions, useBoard, useMatchmaking
-│       │                           # useBilling, useLocks, useStats
-│       ├── lib/                    # liff, api, supabase, promptpay, matchmaking, khunthong, utils
-│       └── types/index.ts
+│ └── src/
+│ ├── pages/ # Next.js Page Router — ไฟล์ต่อ route (ใช้ pages/ ไม่ใช่ app/)
+│ │ ├── board/ # บอร์ดเกม
+│ │ ├── billing/ # คิดเงิน
+│ │ ├── session/ # รายการก๊วน + ลงชื่อ
+│ │ ├── stats/ # สถิติ & อันดับ
+│ │ └── api/ # API routes
+│ ├── components/ # UI components จัดตาม feature
+│ │ ├── session/
+│ │ ├── board/
+│ │ ├── billing/
+│ │ ├── locks/
+│ │ ├── stats/
+│ │ └── ui/ # shadcn/ui (auto-generated ห้ามแก้มือ)
+│ ├── hooks/ # useLiff, useSessions, useBoard, useMatchmaking
+│ │ # useBilling, useLocks, useStats
+│ ├── lib/ # liff, api, supabase, promptpay, matchmaking, khunthong, utils
+│ └── types/index.ts
 └── backend/
-    └── src/
-        ├── routes/                 # sessions, registrations, matches, payments, locks, stats, admin
-        ├── middleware/             # verifyLiff, isAdmin
-        ├── services/               # matchmaking, billing, lineNotify, cronJobs
-        └── db/schema.sql
+└── src/
+├── routes/ # sessions, registrations, matches, payments, locks, stats, admin
+├── middleware/ # verifyLiff, isAdmin
+├── services/ # matchmaking, billing, lineNotify, cronJobs
+└── db/schema.sql
 
 ````
 
@@ -955,7 +955,7 @@ NEXT_PUBLIC_LIFF_ID= # จาก LINE Developers Console
 NEXT_PUBLIC_API_BASE_URL= # URL ของ backend
 NEXT_PUBLIC_PROMPTPAY_NUMBER= # เบอร์ PromptPay ของแอดมิน
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=
 
 backend/.env.example:
 PORT=3000
