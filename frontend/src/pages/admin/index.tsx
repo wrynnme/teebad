@@ -58,20 +58,20 @@ export default function AdminPage() {
       {/* Tabs */}
       <div className="p-4">
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="w-full grid grid-cols-4 mb-4 h-auto">
-            <TabsTrigger value="dashboard" className="flex-col gap-1 h-auto py-2">
+          <TabsList className="w-full flex mb-4 h-auto p-1 gap-1">
+            <TabsTrigger value="dashboard" className="flex-1 flex-col items-center gap-1 h-auto py-2 px-1">
               <IconLayoutGrid size={16} />
               <span className="text-xs">แดชบอร์ด</span>
             </TabsTrigger>
-            <TabsTrigger value="payments" className="flex-col gap-1 h-auto py-2">
+            <TabsTrigger value="payments" className="flex-1 flex-col items-center gap-1 h-auto py-2 px-1">
               <IconReceipt size={16} />
               <span className="text-xs">รอตรวจ</span>
             </TabsTrigger>
-            <TabsTrigger value="sessions" className="flex-col gap-1 h-auto py-2">
+            <TabsTrigger value="sessions" className="flex-1 flex-col items-center gap-1 h-auto py-2 px-1">
               <IconCalendarEvent size={16} />
               <span className="text-xs">ก๊วน</span>
             </TabsTrigger>
-            <TabsTrigger value="users" className="flex-col gap-1 h-auto py-2">
+            <TabsTrigger value="users" className="flex-1 flex-col items-center gap-1 h-auto py-2 px-1">
               <IconUsers size={16} />
               <span className="text-xs">ผู้เล่น</span>
             </TabsTrigger>
