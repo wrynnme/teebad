@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLiff } from '@/hooks/useLiff';
-import { useRegistration, useSession } from '@/hooks/useSessions';
+import { useRegistration, useSession, useUpdateSession } from '@/hooks/useSessions';
 import { cn } from '@/lib/utils';
 import type { PaymentMethod, SessionStatus } from '@/types';
 import {
@@ -16,6 +16,8 @@ import {
   IconBuildingCommunity,
   IconClock,
   IconLayoutGrid,
+  IconPlayerPlay,
+  IconFlagCheck,
   IconUsers,
 } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -36,6 +38,7 @@ export default function SessionDetailPage() {
   const { profile, user: me } = useLiff();
   const { session, isLoading, error, refetch } = useSession(id);
   const { register, cancelRegistration, isLoading: actionLoading } = useRegistration();
+  const { updateStatus, isLoading: statusLoading } = useUpdateSession();
   const [showRegisterSheet, setShowRegisterSheet] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('promptpay');
 
@@ -101,6 +104,19 @@ export default function SessionDetailPage() {
     }
   };
 
+  const handleStatusChange = async (newStatus: 'open' | 'playing' | 'ended') => {
+    const ok = await updateStatus(session.id, newStatus);
+    if (ok) {
+      toast.success(newStatus === 'playing' ? 'เริ่มก๊วนแล้ว' : newStatus === 'ended' ? 'จบก๊วนแล้ว' : 'เปิดรับสมัครแล้ว');
+      refetch();
+      if (newStatus === 'playing') router.push(`/board/${session.id}`);
+    } else {
+      toast.error('เปลี่ยนสถานะไม่สำเร็จ');
+    }
+  };
+
+  const isAdmin = Boolean(me?.is_admin);
+
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Header */}
@@ -150,8 +166,8 @@ export default function SessionDetailPage() {
           />
         </div>
 
-        {/* Board link */}
-        {session.status === 'playing' && (
+        {/* Board link — สำหรับผู้เล่นทั่วไป */}
+        {session.status === 'playing' && !isAdmin && (
           <>
             <Separator />
             <Link href={`/board/${session.id}`}>
@@ -165,25 +181,72 @@ export default function SessionDetailPage() {
       </div>
 
       {/* Bottom action */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-background border-t">
-        {isRegistered ? (
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={handleCancel}
-            disabled={actionLoading || session.status === 'ended'}
-          >
-            {actionLoading ? 'กำลังยกเลิก...' : 'ยกเลิกการลงชื่อ'}
-          </Button>
-        ) : (
-          <Button
-            className="w-full"
-            onClick={() => setShowRegisterSheet(true)}
-            disabled={!canRegister || actionLoading}
-          >
-            {isFull ? 'เต็มแล้ว' : session.status === 'ended' ? 'ก๊วนจบแล้ว' : 'ลงชื่อเข้าร่วม'}
-          </Button>
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t">
+        {/* Admin: status controls */}
+        {isAdmin && (
+          <div className="px-4 pt-3 pb-2 flex gap-2 border-b">
+            {session.status === 'open' && (
+              <Button
+                className="flex-1"
+                onClick={() => handleStatusChange('playing')}
+                disabled={statusLoading}
+              >
+                <IconPlayerPlay size={16} className="mr-1.5" />
+                {statusLoading ? 'กำลังเริ่ม...' : 'เริ่มก๊วน'}
+              </Button>
+            )}
+            {session.status === 'playing' && (
+              <>
+                <Link href={`/board/${session.id}`} className="flex-1">
+                  <Button variant="outline" className="w-full">
+                    <IconLayoutGrid size={16} className="mr-1.5" />
+                    บอร์ดเกม
+                  </Button>
+                </Link>
+                <Button
+                  variant="destructive"
+                  className="flex-1"
+                  onClick={() => handleStatusChange('ended')}
+                  disabled={statusLoading}
+                >
+                  <IconFlagCheck size={16} className="mr-1.5" />
+                  {statusLoading ? 'กำลังจบ...' : 'จบก๊วน'}
+                </Button>
+              </>
+            )}
+            {session.status === 'ended' && (
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => handleStatusChange('open')}
+                disabled={statusLoading}
+              >
+                เปิดรับสมัครใหม่
+              </Button>
+            )}
+          </div>
         )}
+        {/* User: register/cancel */}
+        <div className="p-4">
+          {isRegistered ? (
+            <Button
+              variant="destructive"
+              className="w-full"
+              onClick={handleCancel}
+              disabled={actionLoading || session.status === 'ended'}
+            >
+              {actionLoading ? 'กำลังยกเลิก...' : 'ยกเลิกการลงชื่อ'}
+            </Button>
+          ) : (
+            <Button
+              className="w-full"
+              onClick={() => setShowRegisterSheet(true)}
+              disabled={!canRegister || actionLoading}
+            >
+              {isFull ? 'เต็มแล้ว' : session.status === 'ended' ? 'ก๊วนจบแล้ว' : 'ลงชื่อเข้าร่วม'}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Register sheet */}

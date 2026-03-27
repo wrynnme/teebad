@@ -78,6 +78,21 @@ export function useCreateSession() {
   return { createSession, isLoading, error };
 }
 
+// ── อัพเดต status ก๊วน (admin) ────────────────────────────
+
+export function useUpdateSession() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const updateStatus = async (sessionId: string, status: 'open' | 'playing' | 'ended'): Promise<boolean> => {
+    setIsLoading(true);
+    const res = await api.patch(`/api/sessions/${sessionId}`, { status });
+    setIsLoading(false);
+    return !res.error;
+  };
+
+  return { updateStatus, isLoading };
+}
+
 // ── ลงชื่อ / ยกเลิก ──────────────────────────────────────
 
 export function useRegistration() {
