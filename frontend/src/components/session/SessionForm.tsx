@@ -41,7 +41,6 @@ export function SessionForm({ open, onOpenChange, onSubmit, isLoading, error }: 
       max_players: 16,
       fee_per_hour: 200,
       billing_mode: 'equal',
-      default_match_mode: 'rotation',
     },
   });
 
