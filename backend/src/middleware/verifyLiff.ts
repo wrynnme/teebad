@@ -35,6 +35,8 @@ export async function verifyLiff(req: Request, res: Response, next: NextFunction
     });
 
     if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}));
+      console.error('LINE verify failed:', response.status, JSON.stringify(errBody), '| client_id:', process.env.LIFF_CHANNEL_ID ?? '(not set)');
       res.status(401).json({ error: true, message: 'Invalid LIFF token' });
       return;
     }
