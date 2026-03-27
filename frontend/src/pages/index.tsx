@@ -136,12 +136,12 @@ export default function Home() {
               <AvatarImage src={profile.pictureUrl} alt={profile.displayName} />
               <AvatarFallback>{profile.displayName[0]}</AvatarFallback>
             </Avatar>
-            <div className="flex flex-col items-end">
+            <div className="flex items-center gap-1">
               <span className="text-sm font-medium leading-none">{profile.displayName}</span>
               {user?.is_admin && (
                 <Link href="/admin">
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <IconShieldCheck size={18} className="text-primary" />
+                  <Button variant="ghost" size="icon" className="h-7 w-7">
+                    <IconShieldCheck size={16} className="text-primary" />
                   </Button>
                 </Link>
               )}

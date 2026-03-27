@@ -15,7 +15,6 @@ import {
   IconArrowLeft,
   IconBuildingCommunity,
   IconClock,
-  IconCurrencyBaht,
   IconLayoutGrid,
   IconUsers,
 } from '@tabler/icons-react';
@@ -137,14 +136,6 @@ export default function SessionDetailPage() {
           <div className="flex items-center gap-2 text-muted-foreground">
             <IconBuildingCommunity size={16} />
             <span>{session.court_count} คอร์ท · {modeLabel[session.default_match_mode]}</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <IconCurrencyBaht size={16} />
-            <span>
-              {session.fee_per_hour.toLocaleString()} บาท/ชม.
-              <br />
-              รวม ≈ {totalCost.toLocaleString()} บาท
-            </span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <IconUsers size={16} />

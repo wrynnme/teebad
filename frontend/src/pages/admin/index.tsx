@@ -4,7 +4,7 @@ import { useLiff } from '@/hooks/useLiff';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { IconAlertCircle, IconShieldCheck, IconReceipt, IconUsers, IconLayoutGrid } from '@tabler/icons-react';
+import { IconAlertCircle, IconShieldCheck, IconReceipt, IconUsers, IconLayoutGrid, IconCalendarEvent } from '@tabler/icons-react';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { AdminPayments } from '@/components/admin/AdminPayments';
 import { AdminSessions } from '@/components/admin/AdminSessions';
@@ -79,7 +79,7 @@ export default function AdminPage() {
               <span className="text-xs">รอตรวจ</span>
             </TabsTrigger>
             <TabsTrigger value="sessions" className="flex-col gap-1 h-auto py-2">
-              <IconLayoutGrid size={16} />
+              <IconCalendarEvent size={16} />
               <span className="text-xs">ก๊วน</span>
             </TabsTrigger>
             <TabsTrigger value="users" className="flex-col gap-1 h-auto py-2">
