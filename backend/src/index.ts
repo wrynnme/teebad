@@ -46,8 +46,11 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ error: true, message: err.message ?? 'Internal server error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`TeeBad API running on port ${PORT}`);
-});
+// เรียก listen เฉพาะ local dev — Vercel ใช้ serverless ไม่ต้องการ listen
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`TeeBad API running on port ${PORT}`);
+  });
+}
 
 export default app;
