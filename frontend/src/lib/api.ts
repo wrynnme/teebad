@@ -1,7 +1,7 @@
 import { getLiffIdToken } from './liff';
 import type { ApiResponse } from '@/types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
 async function getHeaders(): Promise<HeadersInit> {
   const idToken = getLiffIdToken();
