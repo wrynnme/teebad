@@ -1,14 +1,13 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import { useLiff } from '@/hooks/useLiff';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { IconAlertCircle, IconShieldCheck, IconReceipt, IconUsers, IconLayoutGrid, IconCalendarEvent } from '@tabler/icons-react';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { AdminPayments } from '@/components/admin/AdminPayments';
 import { AdminSessions } from '@/components/admin/AdminSessions';
 import { AdminUsers } from '@/components/admin/AdminUsers';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useLiff } from '@/hooks/useLiff';
+import { IconAlertCircle, IconCalendarEvent, IconLayoutGrid, IconReceipt, IconShieldCheck, IconUsers } from '@tabler/icons-react';
+import { useRouter } from 'next/router';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -58,7 +57,7 @@ export default function AdminPage() {
       {/* Tabs */}
       <div className="p-4">
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="w-fit flex mb-4 h-fit p-1 gap-1">
+          <TabsList className="size-max flex mb-4 p-1 gap-1">
             <TabsTrigger value="dashboard" className="flex-1 flex-col items-center gap-1 h-auto py-2 px-1">
               <IconLayoutGrid size={16} />
               <span className="text-xs">แดชบอร์ด</span>
