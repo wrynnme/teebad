@@ -87,7 +87,7 @@ export function AdminDashboard() {
             <p className="text-sm text-muted-foreground text-center py-4">ไม่มีก๊วนวันนี้</p>
           ) : (
             <div className="flex flex-col gap-2">
-              {stats.today_sessions.map((session: any) => (
+              {stats.today_sessions.map((session) => (
                 <Link key={session.id} href={`/session/${session.id}`}>
                   <div className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 transition-colors">
                     <div>
