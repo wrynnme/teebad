@@ -30,7 +30,7 @@ async function request<T>(
     }
 
     // ถ้า server คืน { data, error, message } ใช้ format นั้น
-    if (data !== null && typeof data === 'object' && 'error' in data) {
+    if (data !== null && typeof data === 'object' && ('error' in data || 'data' in data)) {
       return data as ApiResponse<T>;
     }
 
